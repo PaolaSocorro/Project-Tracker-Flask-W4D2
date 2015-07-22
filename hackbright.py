@@ -19,6 +19,7 @@ def get_student_by_github(github):
         WHERE github = ?
         """
     db_cursor.execute(QUERY, (github,))
+    print "!%s!" % github
     first, last, github = db_cursor.fetchone()
     print "Student: %s %s\nGithub account: %s" % (first, last, github)
     return (first, last, github)
@@ -75,6 +76,20 @@ def assign_grade(github, title, grade):
     print "Successfully assigned grade of %s for %s in %s" % (
         grade, github, title)
 
+def get_grade_and_title(github):
+    """Return student project titles and respective grades"""
+
+    QUERY = """
+        SELECT project_title, grade
+        FROM Grades
+        WHERE student_github = ?
+    """
+
+    db_cursor.execute(QUERY, (github,))
+    all_rows = db_cursor.fetchall()
+    print all_rows
+
+
 
 def handle_input():
     """Main loop.
@@ -109,6 +124,9 @@ def handle_input():
         elif command == "assign_grade":
             github, title, grade = args
             assign_grade(github, title, grade)
+        elif command == "grade_and_title":
+            github = args[0]
+            get_grade_and_title(github)
 
 
 if __name__ == "__main__":
